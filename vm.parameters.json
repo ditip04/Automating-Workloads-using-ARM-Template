@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+
+  "parameters": {
+
+    "location": {
+      "value": "eastus"
+    },
+
+    "vmName": {
+      "value": "RandVM01"
+    },
+
+    "vmSize": {
+      "value": "Standard_B2s"
+    },
+
+    "adminUsername": {
+      "value": "azureadmin"
+    },
+
+    "adminPassword": {
+      "value": "ReplaceWithYourStrongPassword!"
+    },
+
+    "vnetName": {
+      "value": "Rand-VNet"
+    },
+
+    "vmSubnetName": {
+      "value": "VMSubnet"
+    },
+
+    "nicName": {
+      "value": "RandVM01-NIC"
+    },
+
+    "publicIpName": {
+      "value": "RandVM01-PIP"
+    },
+
+    "networkSecurityGroupName": {
+      "value": "RandVM01-NSG"
+    }
+
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus"
+    },
+    "vnetName": {
+      "value": "Rand-VNet"
+    },
+    "vnetAddressPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "vmSubnetName": {
+      "value": "VMSubnet"
+    },
+    "vmSubnetPrefix": {
+      "value": "10.0.1.0/24"
+    },
+    "privateEndpointSubnetName": {
+      "value": "PrivateEndpointSubnet"
+    },
+    "privateEndpointSubnetPrefix": {
+      "value": "10.0.2.0/24"
+    },
+    "storageAccountName": {
+      "value": "randstorage001"
+    },
+    "storageSku": {
+      "value": "Standard_LRS"
+    },
+    "vmName": {
+      "value": "RandVM01"
+    },
+    "vmSize": {
+      "value": "Standard_B2s"
+    },
+    "adminUsername": {
+      "value": "azureadmin"
+    },
+    "adminPassword": {
+      "value": "ReplaceWithStrongPassword123!"
+    },
+    "nicName": {
+      "value": "RandVM01-NIC"
+    },
+    "publicIpName": {
+      "value": "RandVM01-PIP"
+    },
+    "networkSecurityGroupName": {
+      "value": "RandVM01-NSG"
+    },
+    "privateEndpointName": {
+      "value": "RandStoragePE"
+    },
+    "privateDnsZoneName": {
+      "value": "privatelink.blob.core.windows.net"
+    }
+  }
+}

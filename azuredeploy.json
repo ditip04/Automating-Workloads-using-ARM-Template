@@ -1,0 +1,452 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+
+  "parameters": {
+
+    "location": {
+      "type": "string"
+    },
+
+
+    "vnetName": {
+      "type": "string"
+    },
+
+    "vnetAddressPrefix": {
+      "type": "string"
+    },
+
+
+    "vmSubnetName": {
+      "type": "string"
+    },
+
+    "vmSubnetPrefix": {
+      "type": "string"
+    },
+
+
+    "privateEndpointSubnetName": {
+      "type": "string"
+    },
+
+    "privateEndpointSubnetPrefix": {
+      "type": "string"
+    },
+
+
+    "storageAccountName": {
+      "type": "string"
+    },
+
+    "storageSku": {
+      "type": "string"
+    },
+
+
+    "vmName": {
+      "type": "string"
+    },
+
+    "vmSize": {
+      "type": "string"
+    },
+
+    "adminUsername": {
+      "type": "string"
+    },
+
+    "adminPassword": {
+      "type": "secureString"
+    },
+
+
+    "nicName": {
+      "type": "string"
+    },
+
+
+    "publicIpName": {
+      "type": "string"
+    },
+
+
+    "networkSecurityGroupName": {
+      "type": "string"
+    },
+
+
+    "privateEndpointName": {
+      "type": "string"
+    },
+
+
+    "privateDnsZoneName": {
+      "type": "string"
+    }
+
+  },
+
+
+  "resources": [
+
+    {
+      "type": "Microsoft.Resources/deployments",
+
+      "apiVersion": "2022-09-01",
+
+      "name": "networkDeployment",
+
+      "properties": {
+
+        "mode": "Incremental",
+
+        "templateLink": {
+
+          "uri": "network.json"
+
+        },
+
+        "parameters": {
+
+          "location": {
+            "value": "[parameters('location')]"
+          },
+
+          "vnetName": {
+            "value": "[parameters('vnetName')]"
+          },
+
+          "vnetAddressPrefix": {
+            "value": "[parameters('vnetAddressPrefix')]"
+          },
+
+          "vmSubnetName": {
+            "value": "[parameters('vmSubnetName')]"
+          },
+
+          "vmSubnetPrefix": {
+            "value": "[parameters('vmSubnetPrefix')]"
+          },
+
+          "privateEndpointSubnetName": {
+            "value": "[parameters('privateEndpointSubnetName')]"
+          },
+
+          "privateEndpointSubnetPrefix": {
+            "value": "[parameters('privateEndpointSubnetPrefix')]"
+          }
+
+        }
+
+      }
+
+    },
+
+
+    {
+      "type": "Microsoft.Resources/deployments",
+
+      "apiVersion": "2022-09-01",
+
+      "name": "storageDeployment",
+
+      "dependsOn": [
+
+        "networkDeployment"
+
+      ],
+
+      "properties": {
+
+        "mode": "Incremental",
+
+        "templateLink": {
+
+          "uri": "storage.json"
+
+        },
+
+        "parameters": {
+
+          "location": {
+
+            "value": "[parameters('location')]"
+
+          },
+
+          "storageAccountName": {
+
+            "value": "[parameters('storageAccountName')]"
+
+          },
+
+          "storageSku": {
+
+            "value": "[parameters('storageSku')]"
+
+          }
+
+        }
+
+      }
+
+    },
+
+
+    {
+      "type": "Microsoft.Resources/deployments",
+
+      "apiVersion": "2022-09-01",
+
+      "name": "vmDeployment",
+
+      "dependsOn": [
+
+        "networkDeployment"
+
+      ],
+
+      "properties": {
+
+        "mode": "Incremental",
+
+        "templateLink": {
+
+          "uri": "vm.json"
+
+        },
+
+
+        "parameters": {
+
+
+          "location": {
+
+            "value": "[parameters('location')]"
+
+          },
+
+
+          "vmName": {
+
+            "value": "[parameters('vmName')]"
+
+          },
+
+
+          "vmSize": {
+
+            "value": "[parameters('vmSize')]"
+
+          },
+
+
+          "adminUsername": {
+
+            "value": "[parameters('adminUsername')]"
+
+          },
+
+
+          "adminPassword": {
+
+            "value": "[parameters('adminPassword')]"
+
+          },
+
+
+          "vnetName": {
+
+            "value": "[parameters('vnetName')]"
+
+          },
+
+
+          "vmSubnetName": {
+
+            "value": "[parameters('vmSubnetName')]"
+
+          },
+
+
+          "nicName": {
+
+            "value": "[parameters('nicName')]"
+
+          },
+
+
+          "publicIpName": {
+
+            "value": "[parameters('publicIpName')]"
+
+          },
+
+
+          "networkSecurityGroupName": {
+
+            "value": "[parameters('networkSecurityGroupName')]"
+
+          }
+
+        }
+
+      }
+
+    },
+
+
+    {
+      "type": "Microsoft.Resources/deployments",
+
+      "apiVersion": "2022-09-01",
+
+      "name": "privateEndpointDeployment",
+
+      "dependsOn": [
+
+        "storageDeployment",
+        "networkDeployment"
+
+      ],
+
+
+      "properties": {
+
+
+        "mode": "Incremental",
+
+
+        "templateLink": {
+
+          "uri": "privateendpoint.json"
+
+        },
+
+
+        "parameters": {
+
+
+          "location": {
+
+            "value": "[parameters('location')]"
+
+          },
+
+
+          "privateEndpointName": {
+
+            "value": "[parameters('privateEndpointName')]"
+
+          },
+
+
+          "storageAccountName": {
+
+            "value": "[parameters('storageAccountName')]"
+
+          },
+
+
+          "vnetName": {
+
+            "value": "[parameters('vnetName')]"
+
+          },
+
+
+          "privateEndpointSubnetName": {
+
+            "value": "[parameters('privateEndpointSubnetName')]"
+
+          },
+
+
+          "privateDnsZoneName": {
+
+            "value": "[parameters('privateDnsZoneName')]"
+
+          }
+
+        }
+
+      }
+
+    },
+
+
+    {
+      "type": "Microsoft.Resources/deployments",
+
+      "apiVersion": "2022-09-01",
+
+      "name": "dnsDeployment",
+
+      "dependsOn": [
+
+        "networkDeployment"
+
+      ],
+
+
+      "properties": {
+
+
+        "mode": "Incremental",
+
+
+        "templateLink": {
+
+          "uri": "dns.json"
+
+        },
+
+
+        "parameters": {
+
+
+          "privateDnsZoneName": {
+
+            "value": "[parameters('privateDnsZoneName')]"
+
+          },
+
+
+          "vnetName": {
+
+            "value": "[parameters('vnetName')]"
+
+          },
+
+
+          "location": {
+
+            "value": "[parameters('location')]"
+
+          }
+
+        }
+
+      }
+
+    }
+
+  ],
+
+
+  "outputs": {
+
+
+    "deploymentName": {
+
+      "type": "string",
+
+      "value": "RandEnt ARM Deployment Completed"
+
+    }
+
+  }
+
+}

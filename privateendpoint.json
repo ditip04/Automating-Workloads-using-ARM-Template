@@ -1,0 +1,114 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+
+  "parameters": {
+
+    "location": {
+      "type": "string"
+    },
+
+    "privateEndpointName": {
+      "type": "string"
+    },
+
+    "storageAccountName": {
+      "type": "string"
+    },
+
+    "vnetName": {
+      "type": "string"
+    },
+
+    "privateEndpointSubnetName": {
+      "type": "string"
+    },
+
+    "privateDnsZoneName": {
+      "type": "string"
+    }
+
+  },
+
+
+  "variables": {
+
+    "privateConnectionName": "storageConnection",
+
+    "storageResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+
+  },
+
+
+  "resources": [
+
+    {
+
+      "type": "Microsoft.Network/privateEndpoints",
+
+      "apiVersion": "2023-09-01",
+
+      "name": "[parameters('privateEndpointName')]",
+
+      "location": "[parameters('location')]",
+
+
+      "properties": {
+
+
+        "subnet": {
+
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('privateEndpointSubnetName'))]"
+
+        },
+
+
+        "privateLinkServiceConnections": [
+
+          {
+
+            "name": "[variables('privateConnectionName')]",
+
+            "properties": {
+
+
+              "privateLinkServiceId": "[variables('storageResourceId')]",
+
+
+              "groupIds": [
+
+                "blob"
+
+              ],
+
+
+              "requestMessage": "Connecting VM application privately to Storage Account"
+
+            }
+
+          }
+
+        ]
+
+      }
+
+    }
+
+  ],
+
+
+  "outputs": {
+
+
+    "privateEndpointId": {
+
+      "type": "string",
+
+      "value": "[resourceId('Microsoft.Network/privateEndpoints', parameters('privateEndpointName'))]"
+
+    }
+
+
+  }
+
+}

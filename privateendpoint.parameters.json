@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+
+  "parameters": {
+
+    "location": {
+      "value": "eastus"
+    },
+
+    "privateEndpointName": {
+      "value": "RandStoragePE"
+    },
+
+    "storageAccountName": {
+      "value": "randentstore73921"
+    },
+
+    "vnetName": {
+      "value": "Rand-VNet"
+    },
+
+    "privateEndpointSubnetName": {
+      "value": "PrivateEndpointSubnet"
+    },
+
+    "privateDnsZoneName": {
+      "value": "privatelink.blob.core.windows.net"
+    }
+
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+
+  "parameters": {
+
+    "privateDnsZoneName": {
+      "type": "string"
+    },
+
+    "vnetName": {
+      "type": "string"
+    },
+
+    "location": {
+      "type": "string"
+    }
+
+  },
+
+
+  "variables": {
+
+    "virtualNetworkLinkName": "Rand-VNet-Link"
+
+  },
+
+
+  "resources": [
+
+    {
+      "type": "Microsoft.Network/privateDnsZones",
+
+      "apiVersion": "2020-06-01",
+
+      "name": "[parameters('privateDnsZoneName')]",
+
+      "location": "global",
+
+      "properties": {}
+    },
+
+
+    {
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+
+      "apiVersion": "2020-06-01",
+
+      "name": "[concat(parameters('privateDnsZoneName'), '/', variables('virtualNetworkLinkName'))]",
+
+      "location": "global",
+
+      "dependsOn": [
+
+        "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+
+      ],
+
+
+      "properties": {
+
+
+        "virtualNetwork": {
+
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+
+        },
+
+
+        "registrationEnabled": false
+
+      }
+
+    }
+
+  ],
+
+
+  "outputs": {
+
+
+    "privateDnsZoneId": {
+
+      "type": "string",
+
+      "value": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+
+    }
+
+
+  }
+
+}

@@ -1,0 +1,17 @@
+{
+  "Name": "RandEnt Deployment Operator",
+  "IsCustom": true,
+  "Description": "Deploy RandEnt infrastructure only",
+  "Actions": [
+    "Microsoft.Resources/deployments/*",
+    "Microsoft.Network/*",
+    "Microsoft.Storage/*",
+    "Microsoft.Compute/*"
+  ],
+  "NotActions": [
+    "Microsoft.Authorization/*"
+  ],
+  "AssignableScopes": [
+    "/subscriptions/e7790695-4490-4dd2-977a-cf84848ede2b/resourceGroups/RG-RandEnt"
+  ]
+}

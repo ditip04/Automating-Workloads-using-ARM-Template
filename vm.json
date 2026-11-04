@@ -1,0 +1,338 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+
+  "parameters": {
+
+    "location": {
+      "type": "string"
+    },
+
+    "vmName": {
+      "type": "string"
+    },
+
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_B2s"
+    },
+
+    "adminUsername": {
+      "type": "string"
+    },
+
+    "adminPassword": {
+      "type": "secureString"
+    },
+
+    "vnetName": {
+      "type": "string"
+    },
+
+    "vmSubnetName": {
+      "type": "string"
+    },
+
+    "nicName": {
+      "type": "string"
+    },
+
+    "publicIpName": {
+      "type": "string"
+    },
+
+    "networkSecurityGroupName": {
+      "type": "string"
+    }
+
+  },
+
+
+  "variables": {
+
+    "imagePublisher": "MicrosoftWindowsServer",
+    "imageOffer": "WindowsServer",
+    "imageSku": "2022-datacenter-azure-edition",
+    "imageVersion": "latest"
+
+  },
+
+
+  "resources": [
+
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-09-01",
+      "name": "[parameters('networkSecurityGroupName')]",
+      "location": "[parameters('location')]",
+
+      "properties": {
+
+        "securityRules": [
+
+          {
+            "name": "Allow-RDP",
+
+            "properties": {
+
+              "priority": 1000,
+
+              "direction": "Inbound",
+
+              "access": "Allow",
+
+              "protocol": "Tcp",
+
+              "sourcePortRange": "*",
+
+              "destinationPortRange": "3389",
+
+              "sourceAddressPrefix": "*",
+
+              "destinationAddressPrefix": "*"
+
+            }
+
+          }
+
+        ]
+
+      }
+
+    },
+
+
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+
+      "apiVersion": "2023-09-01",
+
+      "name": "[parameters('publicIpName')]",
+
+      "location": "[parameters('location')]",
+
+
+      "sku": {
+
+        "name": "Standard"
+
+      },
+
+
+      "properties": {
+
+        "publicIPAllocationMethod": "Static",
+
+        "publicIPAddressVersion": "IPv4"
+
+      }
+
+    },
+
+
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+
+      "apiVersion": "2023-09-01",
+
+      "name": "[parameters('nicName')]",
+
+      "location": "[parameters('location')]",
+
+
+      "dependsOn": [
+
+        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]",
+
+        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName'))]"
+
+      ],
+
+
+      "properties": {
+
+
+        "networkSecurityGroup": {
+
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+
+        },
+
+
+        "ipConfigurations": [
+
+          {
+
+            "name": "ipconfig1",
+
+            "properties": {
+
+
+              "privateIPAllocationMethod": "Dynamic",
+
+
+              "subnet": {
+
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('vmSubnetName'))]"
+
+              },
+
+
+              "publicIPAddress": {
+
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName'))]"
+
+              }
+
+
+            }
+
+          }
+
+        ]
+
+      }
+
+    },
+
+
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+
+      "apiVersion": "2023-09-01",
+
+      "name": "[parameters('vmName')]",
+
+      "location": "[parameters('location')]",
+
+
+      "dependsOn": [
+
+        "[resourceId('Microsoft.Network/networkInterfaces', parameters('nicName'))]"
+
+      ],
+
+
+      "properties": {
+
+
+        "hardwareProfile": {
+
+          "vmSize": "[parameters('vmSize')]"
+
+        },
+
+
+        "osProfile": {
+
+          "computerName": "[parameters('vmName')]",
+
+          "adminUsername": "[parameters('adminUsername')]",
+
+          "adminPassword": "[parameters('adminPassword')]"
+
+        },
+
+
+        "storageProfile": {
+
+
+          "imageReference": {
+
+
+            "publisher": "[variables('imagePublisher')]",
+
+            "offer": "[variables('imageOffer')]",
+
+            "sku": "[variables('imageSku')]",
+
+            "version": "[variables('imageVersion')]"
+
+          },
+
+
+          "osDisk": {
+
+
+            "createOption": "FromImage",
+
+
+            "diskSizeGB": 128,
+
+
+            "managedDisk": {
+
+              "storageAccountType": "Standard_LRS"
+
+            }
+
+          }
+
+        },
+
+
+        "networkProfile": {
+
+
+          "networkInterfaces": [
+
+            {
+
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('nicName'))]"
+
+            }
+
+          ]
+
+        },
+
+
+        "diagnosticsProfile": {
+
+          "bootDiagnostics": {
+
+            "enabled": true
+
+          }
+
+        }
+
+      }
+
+    }
+
+  ],
+
+
+  "outputs": {
+
+
+    "vmId": {
+
+      "type": "string",
+
+      "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+
+    },
+
+
+    "nicId": {
+
+      "type": "string",
+
+      "value": "[resourceId('Microsoft.Network/networkInterfaces', parameters('nicName'))]"
+
+    },
+
+
+    "publicIPAddressId": {
+
+      "type": "string",
+
+      "value": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName'))]"
+
+    }
+
+  }
+
+}
