@@ -8,8 +8,6 @@ The solution uses a modular ARM template architecture to provision networking, v
 
 It also implements secure VM-to-Storage communication through Azure's private network, eliminating public internet exposure for storage access.
 
-The project was completed as part of the **Microsoft Azure AZ-305: Designing Microsoft Azure Infrastructure Solutions** training.
-
 ## 🎯 Project Objectives
 
 - Implement Infrastructure as Code using Azure ARM templates.
